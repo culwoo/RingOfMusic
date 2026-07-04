@@ -168,3 +168,120 @@ button { font: inherit; cursor: pointer; }
   .topbar { flex-wrap: wrap; height: auto; padding: 10px 14px; }
   .tabs { margin-left: 0; }
 }
+
+/* ---------- 사업 계층: 프로젝트 바 ---------- */
+.project-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 16px; border-bottom: 1px solid var(--border); background: var(--panel);
+}
+.project-bar-label { font-size: 12px; color: var(--muted); letter-spacing: 0.06em; }
+.project-bar select {
+  background: #101015; color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px; font-size: 13px; max-width: 320px;
+}
+.project-story {
+  color: var(--muted); font-size: 12px; max-width: 340px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.save-state { margin-left: auto; color: var(--accent); font-size: 12px; }
+.project-create { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; padding-top: 8px; }
+.project-create input {
+  flex: 1; min-width: 180px; background: #101015; color: var(--text);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;
+}
+.project-create input:focus { border-color: var(--accent); outline: none; }
+
+/* ---------- 사이드 래퍼 (컨트롤 + 공식) ---------- */
+.side { display: flex; flex-direction: column; width: 280px; flex-shrink: 0; overflow-y: auto; border-left: 1px solid var(--border); }
+.side .panel { width: 100%; border-left: none; overflow-y: visible; flex-shrink: 0; }
+.panel-secondary { padding-top: 0; }
+
+/* ---------- 디자인 공식 카드 ---------- */
+.formula-card { border-top: 1px solid var(--border); padding-top: 18px; }
+.formula-ver { font-style: normal; color: var(--accent); font-size: 12px; margin-left: 6px; }
+.formula-actions { display: flex; gap: 8px; margin-bottom: 10px; }
+.formula-actions .btn { flex: 1; font-size: 12px; padding: 7px 6px; }
+.formula-note {
+  width: 100%; background: #101015; color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px; font-size: 12px; resize: vertical; font-family: inherit;
+}
+.formula-note:focus { border-color: var(--accent); outline: none; }
+.formula-insights { margin-top: 10px; }
+.formula-insights p { margin: 6px 0 0; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.formula-taglist { color: var(--accent) !important; }
+.formula-msg { margin: 8px 0 0; font-size: 12px; color: var(--accent); }
+
+/* ---------- 시안 필름스트립 ---------- */
+.snapshot-strip { border-top: 1px solid var(--border); background: var(--panel); padding: 10px 16px 12px; }
+.snapshot-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.snapshot-head > span { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.snapshot-empty { margin: 2px 0 4px; font-size: 12px; color: var(--muted); }
+.snapshot-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; }
+.snapshot-card {
+  position: relative; flex: 0 0 auto; width: 190px; border: 1px solid var(--border);
+  border-radius: 10px; background: #101015; padding: 10px 12px;
+}
+.snapshot-card.fav { border-color: var(--accent); }
+.snapshot-main {
+  display: flex; flex-direction: column; gap: 3px; width: 100%; text-align: left;
+  background: none; border: none; color: var(--text); cursor: pointer; padding: 0; font-size: 12px;
+}
+.snapshot-main strong { font-size: 13px; }
+.snapshot-main span { color: var(--muted); font-size: 11.5px; }
+.snapshot-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 4px; }
+.heart { background: none; border: none; color: var(--muted); font-size: 15px; cursor: pointer; padding: 2px; }
+.heart.on { color: var(--accent); }
+.snapshot-del { background: none; border: none; color: var(--muted); font-size: 14px; cursor: pointer; padding: 2px; }
+.snapshot-del:hover { color: #e76f51; }
+.snapshot-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.taste-tag {
+  border: 1px solid var(--border); background: transparent; color: var(--muted);
+  border-radius: 999px; font-size: 10.5px; padding: 2px 8px; cursor: pointer;
+}
+.taste-tag.on { border-color: var(--accent); color: var(--accent); background: rgba(233, 196, 106, 0.08); }
+
+@media (max-width: 980px) {
+  .side { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+}
+
+/* ---------- 시안 스트립 접이식 ---------- */
+.snapshot-strip { padding: 6px 16px 8px; }
+.snapshot-strip.open { padding-bottom: 12px; }
+.snapshot-head { margin-bottom: 0; }
+.snapshot-strip.open .snapshot-head { margin-bottom: 8px; }
+.snapshot-toggle {
+  display: flex; align-items: center; gap: 8px; background: none; border: none;
+  color: var(--muted); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; padding: 4px 0;
+}
+.snapshot-toggle:hover { color: var(--text); }
+.snapshot-toggle em { font-style: normal; color: var(--accent); letter-spacing: 0; text-transform: none; }
+.chev { display: inline-block; transition: transform 140ms ease; }
+.chev.up { transform: rotate(180deg); }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* ---------- 파형 접이식 ---------- */
+.wave-toggle-bar {
+  display: flex; align-items: center; padding: 2px 16px;
+  border-bottom: 1px solid var(--border); background: var(--panel);
+}
+
+/* ---------- 스튜디오 로그인 ---------- */
+.login-backdrop {
+  position: fixed; inset: 0; z-index: 50; display: grid; place-items: center;
+  background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(3px);
+}
+.login-modal {
+  display: flex; flex-direction: column; gap: 10px; width: min(360px, 92vw);
+  border: 1px solid var(--border); border-radius: 14px; background: var(--panel);
+  padding: 24px 22px;
+}
+.login-modal h2 { margin: 0; font-size: 17px; }
+.login-hint { margin: 0 0 6px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+.login-modal input {
+  background: #101015; color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; font-size: 13px;
+}
+.login-modal input:focus { border-color: var(--accent); outline: none; }
+.login-msg { margin: 4px 0 0; font-size: 12px; color: var(--accent); line-height: 1.5; }
+.studio-enter { position: fixed; top: 14px; right: 16px; z-index: 40; }

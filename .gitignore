@@ -1,3 +1,9 @@
 node_modules
 dist
 *.log
+
+# 로컬 전용
+backup/
+
+# 런타임 데이터 (고객 원본·공식·피드백)
+data/

@@ -51,3 +51,14 @@ src/
 ## 브라우저 지원
 
 최신 Chrome / Edge / Safari / Firefox. (Web Audio API, WebGL2, `new AudioBuffer()` 필요)
+
+## 사업 계층 (Supabase 백엔드)
+
+디자인 엔진 위에 주문 제작 사업 계층이 Supabase(Postgres + Storage + Auth)로 통합되어 있다. 로컬과 배포판이 같은 백엔드를 쓰므로 어디서나 동일하게 동작한다.
+
+- **스튜디오 로그인** — 화면 우상단 "스튜디오 로그인". 허용된 이메일(`ring_allowed_emails` 화이트리스트)로 로그인해야 사업 UI가 열린다. 그 외 방문자는 순수 데모 도구만 보고, 다른 계정으로 로그인해도 RLS가 모든 데이터를 차단한다.
+- **고객 프로젝트** — 프로젝트 바에서 생성/선택. 구간·파라미터·재질 자동 저장, 재방문 시 원본 오디오까지 복원.
+- **원본 영구 보존** — 업로드 원본이 비공개 스토리지 버킷(`ring-media`)에 저장되고 서명 URL로만 재생된다.
+- **시안 보관함 / 디자인 공식** — 시안 저장·하트·태그가 축적되고, 공식은 버전 관리(`ring_formula_versions`)된다.
+
+Supabase 프로젝트: Harvester HR(aajkratdmmxveqxtedxp) 내 `ring_` 접두사 테이블로 격리. 디자이너 추가는 `ring_allowed_emails`에 이메일 INSERT 한 줄이면 된다.
