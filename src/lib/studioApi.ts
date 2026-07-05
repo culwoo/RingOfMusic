@@ -4,7 +4,7 @@
  * 화이트리스트에 없는 계정은 로그인해도 데이터가 보이지 않는다.
  */
 import type { Session } from '@supabase/supabase-js';
-import { MetalKey, RingParams } from './ringMath';
+import { DEFAULT_PARAMS, MetalKey, RingParams } from './ringMath';
 import { supabase } from './supabaseClient';
 
 export interface DesignSelection {
@@ -82,15 +82,6 @@ export function onAuthChange(callback: (session: Session | null) => void): () =>
 export async function signIn(email: string, password: string): Promise<string | null> {
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   return error ? error.message : null;
-}
-
-/** 초대 코드 검증 + 화이트리스트 등록. 성공 시 true. */
-export async function redeemInvite(code: string, email: string): Promise<boolean> {
-  const { data, error } = await supabase.rpc('ring_redeem_invite', {
-    invite_code: code,
-    signup_email: email,
-  });
-  return !error && data === true;
 }
 
 export async function signUp(email: string, password: string): Promise<string | null> {
@@ -175,8 +166,11 @@ export async function uploadMedia(
   file: File,
   projectId?: string
 ): Promise<{ media: ProjectMedia; project: ProjectRecord | null } | null> {
+  const { data: userData } = await supabase.auth.getUser();
+  const uid = userData.user?.id;
+  if (!uid) return null;
   const safeName = file.name.replace(/[^\w.\-가-힣]/g, '_').slice(-80);
-  const path = `${projectId ?? 'no-project'}/${Date.now().toString(36)}-${safeName}`;
+  const path = `${uid}/${projectId ?? 'no-project'}/${Date.now().toString(36)}-${safeName}`;
   const { error } = await supabase.storage.from(MEDIA_BUCKET).upload(path, file, {
     contentType: file.type || 'application/octet-stream',
     upsert: false,
@@ -222,6 +216,19 @@ export async function fetchFormula(): Promise<StudioFormula | null> {
   if (error || !data) return null;
   const row = data as FormulaRow;
   return { version: row.version, updatedAt: row.created_at, ...row.data };
+}
+
+/** 공식이 없는 신규 사용자에게 기본 공식 v1을 만들어 준다 */
+export async function ensureFormula(): Promise<StudioFormula | null> {
+  const existing = await fetchFormula();
+  if (existing) return existing;
+  return saveFormula({
+    name: '기본 공식',
+    designerNote: '나만의 공식으로 발전시키세요. 저장할 때마다 버전이 기록됩니다.',
+    defaults: DEFAULT_PARAMS,
+    defaultMetal: 'gold',
+    tasteTags: ['비율 좋음', '질감 좋음', '서사 표현 좋음', '너무 과함', '밴드 두꺼움', '제작 어려움'],
+  });
 }
 
 export async function saveFormula(

@@ -11,7 +11,7 @@ import LoginPanel from './components/LoginPanel';
 import { buildRingAmps, decodeAudioFile, extractPeaks, formatTime, generateDemoBuffer, normalize } from './lib/audio';
 import { DEFAULT_PARAMS, MetalKey, RingParams } from './lib/ringMath';
 import {
-  createProject, fetchFormula, getMediaUrl, getSession, listProjects, onAuthChange,
+  createProject, ensureFormula, getMediaUrl, getSession, listProjects, onAuthChange,
   patchProject, recordFeedback, signOut, uploadMedia,
   ProjectRecord, Snapshot, StudioFormula,
 } from './lib/studioApi';
@@ -65,7 +65,7 @@ export default function App() {
 
   /* ---------- 세션 감시 + 스튜디오 로드 ---------- */
   const loadStudio = async () => {
-    const [f, list] = await Promise.all([fetchFormula(), listProjects()]);
+    const [f, list] = await Promise.all([ensureFormula(), listProjects()]);
     if (f) {
       setFormula(f);
       setParams(f.defaults);

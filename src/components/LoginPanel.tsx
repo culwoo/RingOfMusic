@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { redeemInvite, signIn, signUp } from '../lib/studioApi';
+import { signIn, signUp } from '../lib/studioApi';
 
 /** Supabase 인증 에러를 한국어로 번역 */
 function koError(message: string): string {
@@ -26,7 +26,6 @@ export default function LoginPanel({ onClose }: Props) {
   const [mode, setMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [invite, setInvite] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -46,17 +45,6 @@ export default function LoginPanel({ onClose }: Props) {
         onClose();
       }
     } else {
-      if (!invite.trim()) {
-        setMessage('초대 코드를 입력하세요. 운영자에게 받을 수 있습니다.');
-        setBusy(false);
-        return;
-      }
-      const accepted = await redeemInvite(invite, email.trim());
-      if (!accepted) {
-        setBusy(false);
-        setMessage('초대 코드가 올바르지 않습니다.');
-        return;
-      }
       const error = await signUp(email.trim(), password);
       if (error) {
         setBusy(false);
@@ -80,7 +68,7 @@ export default function LoginPanel({ onClose }: Props) {
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>
         <h2>스튜디오 {mode === 'signin' ? '로그인' : '가입'}</h2>
         <p className="login-hint">
-          디자이너/운영자 전용입니다. 허용된 이메일만 스튜디오 데이터에 접근할 수 있습니다.
+          가입하면 나만의 작업실이 생깁니다. 프로젝트·시안·공식은 내 계정에서만 보입니다.
         </p>
         <input
           type="email"
@@ -97,15 +85,6 @@ export default function LoginPanel({ onClose }: Props) {
           onChange={(e) => setPassword(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && void submit()}
         />
-        {mode === 'signup' ? (
-          <input
-            type="text"
-            placeholder="초대 코드 (운영자에게 받으세요)"
-            value={invite}
-            onChange={(e) => setInvite(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && void submit()}
-          />
-        ) : null}
         <button className="btn btn-primary" onClick={() => void submit()} disabled={busy}>
           {busy ? '처리 중' : mode === 'signin' ? '로그인' : '가입하기'}
         </button>
