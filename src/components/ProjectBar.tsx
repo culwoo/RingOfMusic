@@ -8,10 +8,12 @@ interface Props {
   onSelect: (id: string) => void;
   onCreate: (input: { name: string; client: string; story: string }) => void;
   onLogout: () => void;
+  myEmail: string;
+  isAdmin: boolean;
 }
 
 /** 고객 프로젝트 선택/생성 바. 모든 디자인 작업은 프로젝트에 귀속되어 자동 저장된다. */
-export default function ProjectBar({ projects, activeId, saveState, onSelect, onCreate, onLogout }: Props) {
+export default function ProjectBar({ projects, activeId, saveState, onSelect, onCreate, onLogout, myEmail, isAdmin }: Props) {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const [client, setClient] = useState('');
@@ -30,6 +32,7 @@ export default function ProjectBar({ projects, activeId, saveState, onSelect, on
   return (
     <div className="project-bar">
       <span className="project-bar-label">프로젝트</span>
+      {isAdmin ? <span className="admin-chip">관리자</span> : null}
       <select
         value={activeId ?? ''}
         onChange={(e) => e.target.value && onSelect(e.target.value)}
@@ -37,12 +40,16 @@ export default function ProjectBar({ projects, activeId, saveState, onSelect, on
         <option value="" disabled>
           {projects.length === 0 ? '프로젝트 없음 - 새로 만드세요' : '프로젝트 선택'}
         </option>
-        {projects.map((p) => (
-          <option key={p.id} value={p.id}>
-            {p.name}
-            {p.client ? ` - ${p.client}` : ''}
-          </option>
-        ))}
+        {projects.map((p) => {
+          const foreign = p.ownerEmail && p.ownerEmail !== myEmail;
+          return (
+            <option key={p.id} value={p.id}>
+              {p.name}
+              {p.client ? ` - ${p.client}` : ''}
+              {foreign ? ` [${p.ownerEmail}]` : ''}
+            </option>
+          );
+        })}
       </select>
       <button className="btn btn-ghost" onClick={() => setCreating((v) => !v)}>
         {creating ? '취소' : '+ 새 프로젝트'}

@@ -11,8 +11,8 @@ import LoginPanel from './components/LoginPanel';
 import { buildRingAmps, decodeAudioFile, extractPeaks, formatTime, generateDemoBuffer, normalize } from './lib/audio';
 import { DEFAULT_PARAMS, MetalKey, RingParams } from './lib/ringMath';
 import {
-  createProject, ensureFormula, getMediaUrl, getSession, listProjects, onAuthChange,
-  patchProject, recordFeedback, signOut, uploadMedia,
+  createProject, ensureFormula, fetchIsAdmin, getMediaUrl, getSession, listProjects,
+  onAuthChange, patchProject, recordFeedback, signOut, uploadMedia,
   ProjectRecord, Snapshot, StudioFormula,
 } from './lib/studioApi';
 
@@ -36,6 +36,8 @@ export default function App() {
   const [formula, setFormula] = useState<StudioFormula | null>(null);
   const [saveState, setSaveState] = useState('');
   const [hasSession, setHasSession] = useState(false);
+  const [myEmail, setMyEmail] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [waveOpen, setWaveOpen] = useState(() => {
     try {
@@ -65,6 +67,7 @@ export default function App() {
 
   /* ---------- 세션 감시 + 스튜디오 로드 ---------- */
   const loadStudio = async () => {
+    void fetchIsAdmin().then(setIsAdmin);
     const [f, list] = await Promise.all([ensureFormula(), listProjects()]);
     if (f) {
       setFormula(f);
@@ -82,10 +85,12 @@ export default function App() {
   useEffect(() => {
     void getSession().then((session) => {
       setHasSession(Boolean(session));
+      setMyEmail(session?.user.email ?? '');
       if (session) void loadStudio();
     });
     const unsubscribe = onAuthChange((session) => {
       setHasSession(Boolean(session));
+      setMyEmail(session?.user.email ?? '');
       if (session) {
         void loadStudio();
       } else {
@@ -93,6 +98,7 @@ export default function App() {
         setProjects([]);
         setActiveProjectId(null);
         setSaveState('');
+        setIsAdmin(false);
       }
     });
     return unsubscribe;
@@ -331,6 +337,8 @@ export default function App() {
       onSelect={handleSelectProject}
       onCreate={(input) => void handleCreateProject(input)}
       onLogout={() => void signOut()}
+      myEmail={myEmail}
+      isAdmin={isAdmin}
     />
   );
 

@@ -41,6 +41,7 @@ export interface ProjectRecord {
   name: string;
   client: string;
   story: string;
+  ownerEmail: string;
   createdAt: string;
   updatedAt: string;
   media: ProjectMedia | null;
@@ -89,6 +90,12 @@ export async function signUp(email: string, password: string): Promise<string | 
   return error ? error.message : null;
 }
 
+/** 현재 계정이 관리자인지 (관리자는 모든 작업실을 볼 수 있다) */
+export async function fetchIsAdmin(): Promise<boolean> {
+  const { data, error } = await supabase.rpc('ring_is_admin');
+  return !error && data === true;
+}
+
 export async function signOut(): Promise<void> {
   await supabase.auth.signOut();
 }
@@ -100,6 +107,7 @@ interface ProjectRow {
   name: string;
   client: string;
   story: string;
+  owner_email: string | null;
   created_at: string;
   updated_at: string;
   media: ProjectMedia | null;
@@ -113,6 +121,7 @@ function rowToProject(row: ProjectRow): ProjectRecord {
     name: row.name,
     client: row.client,
     story: row.story,
+    ownerEmail: row.owner_email ?? '',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     media: row.media,
