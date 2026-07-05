@@ -7,3 +7,6 @@ backup/
 
 # 런타임 데이터 (고객 원본·공식·피드백)
 data/
+
+.vercel
+.env*

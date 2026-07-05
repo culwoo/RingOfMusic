@@ -84,6 +84,15 @@ export async function signIn(email: string, password: string): Promise<string | 
   return error ? error.message : null;
 }
 
+/** 초대 코드 검증 + 화이트리스트 등록. 성공 시 true. */
+export async function redeemInvite(code: string, email: string): Promise<boolean> {
+  const { data, error } = await supabase.rpc('ring_redeem_invite', {
+    invite_code: code,
+    signup_email: email,
+  });
+  return !error && data === true;
+}
+
 export async function signUp(email: string, password: string): Promise<string | null> {
   const { error } = await supabase.auth.signUp({ email, password });
   return error ? error.message : null;
